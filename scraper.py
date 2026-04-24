@@ -1,26 +1,50 @@
 import re
 from urllib.parse import urlparse
 
+from bs4 import BeautifulSoup 
 
-# TODO
+
 def scraper(url, resp):
-    links = extract_next_links(url, resp)
-    return [link for link in links if is_desirable(link)]
 
-# TODO
+    return extract_next_links(url, resp)
+
+    # extract_next_link() already checks that a link is_desirable() before returning
+        # links = extract_next_links(url, resp)
+        # return [link for link in links if is_desirable(link)]
+
+
+# Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
 def extract_next_links(url, resp):
-    # Implementation required.
-    # url: the URL that was used to get the page
-    # resp.url: the actual url of the page
-    # resp.status: the status code returned by the server. 200 is OK, you got the page. Other numbers mean that there was some kind of problem.
-    # resp.error: when status is not 200, you can check the error here, if needed.
-    # resp.raw_response: this is where the page actually is. More specifically, the raw_response has two parts:
-    #         resp.raw_response.url: the url, again
-    #         resp.raw_response.content: the content of the page!
-    # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
-    return list()
 
-# TODO
+    # List to hold the scraped URLs (using a set for faster lookup)
+    urls: set[str] = set()
+
+    # Ensure that the page was successfully retrieved before attempting to parse it
+    if resp.status != 200:
+        
+        # Print the error message before returning an empty list of URLs
+        print("\nAN ERROR HAS OCCURRED")
+        print(resp.error)
+        print()
+
+        return urls
+
+    # BeautifulSoup converts the HTML response into an object that can be parsed by HTML tag
+    text = BeautifulSoup(resp.raw_response.content, "html.parser")
+
+    # Finds all tags that have an href attribute
+    for tag in text.find_all(href=True):
+
+        # Get the link from the href attribute
+        link: str = tag.get("href")
+
+        # Add the link to the scraped URLS if it's desirable AND not a duplicate 
+        if (is_desirable(link)) and (link not in urls):
+            urls.append(link)
+
+    return list(urls)
+
+
 def is_desirable(url):
     # Decide whether to crawl this url or not. 
     # If you decide to crawl it, return True; otherwise return False.
