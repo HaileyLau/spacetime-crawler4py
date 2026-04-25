@@ -57,6 +57,7 @@ def is_desirable(url):
         if parsed.scheme not in set(["http", "https"]):
             return False
         
+        # Check if url is in the allowed domains
         hostname = parsed.hostname
         if hostname:
             hostname = hostname.lower()
@@ -65,6 +66,13 @@ def is_desirable(url):
                     in_domain = True
         if not in_domain:
             return False
+        
+        # Check for crawler traps
+        trap_params = {"tribe-bar-date", "orderby", "ical"}
+        query = parsed.query.lower()
+        for param in trap_params:
+            if param in query:
+                return False
         
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
