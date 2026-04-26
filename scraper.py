@@ -67,12 +67,16 @@ def is_desirable(url):
         if not in_domain:
             return False
         
-        # Check for crawler traps
-        trap_params = {"tribe-bar-date", "orderby", "ical"}
+        # Check query for crawler traps
+        trap_params = {"tribe-bar-date", "orderby", "ical", "format=xml", "p=", "filter"}
         query = parsed.query.lower()
         for param in trap_params:
             if param in query:
                 return False
+        
+        # Check path for crawler traps
+        if re.search(r"\d{4}-\d{2}-\d{2}", parsed.path) or "wp-" in parsed.path.lower():
+            return False
         
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
