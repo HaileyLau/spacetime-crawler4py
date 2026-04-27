@@ -81,7 +81,7 @@ def is_desirable(url):
         
         # Check query for crawler traps
         trap_params = {"tribe", "orderby", "ical", "format=xml", "p=", "filter", "date=", "share=",
-                        "page_id", "rest_route", "id=", "tab_files", "tab_details", "do=media", "image="}
+                        "page_id", "rest_route", "id=", "tab_files", "tab_details", "do=media", "image=", "rev=", "rev2"}
         query = parsed.query.lower()
         for param in trap_params:
             if param in query:
