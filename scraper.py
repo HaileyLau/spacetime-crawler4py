@@ -1,5 +1,5 @@
 import re
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin, urlunparse
 
 from bs4 import BeautifulSoup 
 
@@ -31,13 +31,25 @@ def extract_next_links(url, resp):
 
     # BeautifulSoup converts the HTML response into an object that can be parsed by HTML tag
     text = BeautifulSoup(resp.raw_response.content, "html.parser")
-
+ 
+    
     # Finds all tags that have an href attribute
     for tag in text.find_all(href=True):
 
         # Get the link from the href attribute
         link: str = tag.get("href")
 
+        # skip empty links and nonhttp links
+        if not link or not link.startswith(("mailto:")) or link.startswith(("javascript:")):
+            continue
+
+        # parse real urls
+        link = urljoin(url, link)
+
+        # remove fragments
+        parsed = urlparse(link)
+        link = urlunparse(parsed._replace(fragment=""))
+        
         # Add the link to the scraped URLS if it's desirable AND not a duplicate 
         if (is_desirable(link)) and (link not in urls):
             urls.add(link)
@@ -75,7 +87,7 @@ def is_desirable(url):
                 return False
         
         # Check path for crawler traps
-        path_segments = {"wp-", "/feed", "xml", "/page"}
+        path_segments = {"/wp-", "/feed", "xml", "/page"}
         path = parsed.path.lower()
         for segment in path_segments:
             if segment in path:
