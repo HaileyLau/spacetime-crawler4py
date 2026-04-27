@@ -40,7 +40,7 @@ def extract_next_links(url, resp):
 
         # Add the link to the scraped URLS if it's desirable AND not a duplicate 
         if (is_desirable(link)) and (link not in urls):
-            urls.append(link)
+            urls.add(link)
 
     return list(urls)
 
@@ -68,14 +68,19 @@ def is_desirable(url):
             return False
         
         # Check query for crawler traps
-        trap_params = {"tribe-bar-date", "orderby", "ical", "format=xml", "p=", "filter"}
+        trap_params = {"tribe", "orderby", "ical", "format=xml", "p=", "filter", "date=", "share=", "page_id", "rest_route", "id="}
         query = parsed.query.lower()
         for param in trap_params:
             if param in query:
                 return False
         
         # Check path for crawler traps
-        if re.search(r"\d{4}-\d{2}-\d{2}", parsed.path) or "wp-" in parsed.path.lower():
+        path_segments = {"wp-", "/feed", "xml", "/page"}
+        path = parsed.path.lower()
+        for segment in path_segments:
+            if segment in path:
+                return False
+        if re.search(r"\d{4}-\d{2}-\d{2}", path) or re.search(r"\d{4}-\d{2}", parsed.path):
             return False
         
         return not re.match(
@@ -89,7 +94,7 @@ def is_desirable(url):
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower())
 
     except ValueError:
-        print ("ValueError for ", parsed)
+        print ("ValueError for ", url)
         return False
 
     except TypeError:
