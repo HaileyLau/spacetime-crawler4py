@@ -40,7 +40,7 @@ def extract_next_links(url, resp):
         link: str = tag.get("href")
 
         # skip empty links and nonhttp links
-        if not link or not link.startswith(("mailto:")) or link.startswith(("javascript:")):
+        if not link or link.startswith(("mailto:")) or link.startswith(("javascript:")):
             continue
 
         # parse real urls
@@ -49,7 +49,7 @@ def extract_next_links(url, resp):
         # remove fragments
         parsed = urlparse(link)
         link = urlunparse(parsed._replace(fragment=""))
-        
+
         # Add the link to the scraped URLS if it's desirable AND not a duplicate 
         if (is_desirable(link)) and (link not in urls):
             urls.add(link)
