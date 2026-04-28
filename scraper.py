@@ -127,10 +127,12 @@ def is_desirable(url):
             + r"|thmx|mso|arff|rtf|jar|csv"
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower())
 
-    except ValueError:
+    except ValueError as e:
         print ("ValueError for ", url)
+        print ("Error: ", e)
         return False
 
-    except TypeError:
-        print ("TypeError for ", parsed)
+    except TypeError as e:
+        print ("TypeError for ", url)
+        print ("Error: ", e)
         raise
