@@ -79,21 +79,26 @@ def is_desirable(url):
         if not in_domain:
             return False
         
+        # swiki pages seem to be the same as wiki pages
+        if "swiki" in url:
+            return False
+        
         # Check query for crawler traps
         trap_params = {"tribe", "orderby", "ical", "format=xml", "p=", "filter", "date=", "share=",
-                        "page_id", "rest_route", "id=", "tab_files", "tab_details", "do=media", "image=", "rev=", "rev2"}
+                        "page_id", "rest_route", "id=", "tab_files", "tab_details", "do=", "idx=",
+                        "image=", "rev=", "rev2", "search=", "keywords="}
         query = parsed.query.lower()
         for param in trap_params:
             if param in query:
                 return False
         
         # Check path for crawler traps
-        path_segments = {"/wp-", "/feed", "xml", "/page"}
+        path_segments = {"/wp-", "/feed", "xml", "/page", "/login"}
         path = parsed.path.lower()
         for segment in path_segments:
             if segment in path:
                 return False
-        if re.search(r"\d{4}-\d{2}-\d{2}", path) or re.search(r"\d{4}-\d{2}", parsed.path):
+        if re.search(r"\d{4}-\d{2}-\d{2}", path) or re.search(r"\d{4}-\d{2}", path):
             return False
         
         return not re.match(
