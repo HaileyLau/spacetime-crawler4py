@@ -98,10 +98,10 @@ def is_desirable(url):
                 return False
         
         # Check query for crawler traps
-        trap_params = {"tribe", "orderby", "ical", "format=xml", "p=", "filter", "date=", "share=",
+        trap_params = {"tribe", "orderby", "ical", "format=", "p=", "filter", "date=", "share=",
                         "page_id", "rest_route", "id=", "tab_files", "tab_details", "do=", "idx=",
                         "image=", "rev=", "rev2", "search=", "keywords=", "eventdisplay", "version=",
-                        "precision=second"}
+                        "precision=second", "c=", "action="}
         query = parsed.query.lower()
         for param in trap_params:
             if param in query:
@@ -109,7 +109,7 @@ def is_desirable(url):
         
         # Check path for crawler traps
         path_segments = {"/wp-", "/feed", "xml", "/page", "/login", "/today", "/month", "/events/", "/index",
-                         "/tsld", "/sld", "/list"}
+                         "/tsld", "/sld", "/list", "/asterix/", "/admin", ":support"}
         path = parsed.path.lower()
         for segment in path_segments:
             if segment in path:
