@@ -15,46 +15,58 @@ def scraper(url, resp):
 
 # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
 def extract_next_links(url, resp):
+    try:
+        # List to hold the scraped URLs (using a set for faster lookup)
+        urls: set[str] = set()
 
-    # List to hold the scraped URLs (using a set for faster lookup)
-    urls: set[str] = set()
+        # Ensure that the page was successfully retrieved before attempting to parse it
+        if resp.status != 200:
+            
+            # Print the error message before returning an empty list of URLs
+            print("\nAN ERROR HAS OCCURRED")
+            print(resp.error)
+            print()
 
-    # Ensure that the page was successfully retrieved before attempting to parse it
-    if resp.status != 200:
-        
-        # Print the error message before returning an empty list of URLs
-        print("\nAN ERROR HAS OCCURRED")
-        print(resp.error)
-        print()
+            return urls
 
-        return urls
-
-    # BeautifulSoup converts the HTML response into an object that can be parsed by HTML tag
-    text = BeautifulSoup(resp.raw_response.content, "html.parser")
- 
+        # BeautifulSoup converts the HTML response into an object that can be parsed by HTML tag
+        text = BeautifulSoup(resp.raw_response.content, "html.parser")
     
-    # Finds all tags that have an href attribute
-    for tag in text.find_all(href=True):
+        
+        # Finds all tags that have an href attribute
+        for tag in text.find_all(href=True):
 
-        # Get the link from the href attribute
-        link: str = tag.get("href")
+            # Get the link from the href attribute
+            link: str = tag.get("href")
 
-        # skip empty links and nonhttp links
-        if not link or link.startswith(("mailto:")) or link.startswith(("javascript:")):
-            continue
+            # skip empty links and nonhttp links
+            if not link or link.startswith(("mailto:")) or link.startswith(("javascript:")):
+                continue
 
-        # parse real urls
-        link = urljoin(url, link)
+            # parse real urls
+            link = urljoin(url, link)
 
-        # remove fragments
-        parsed = urlparse(link)
-        link = urlunparse(parsed._replace(fragment=""))
+            # remove fragments
+            parsed = urlparse(link)
+            link = urlunparse(parsed._replace(fragment=""))
 
-        # Add the link to the scraped URLS if it's desirable AND not a duplicate 
-        if (is_desirable(link)) and (link not in urls):
-            urls.add(link)
+            # Add the link to the scraped URLS if it's desirable AND not a duplicate 
+            if (is_desirable(link)) and (link not in urls):
+                urls.add(link)
 
-    return list(urls)
+        return list(urls)
+    
+    except ValueError:
+        print ("ValueError for ", url)
+        return None
+    
+    except AssertionError:
+        print ("AssertionError for ", url)
+        return None
+
+    except TypeError:
+        print ("TypeError for ", url)
+        raise
 
 
 def is_desirable(url):
@@ -80,20 +92,24 @@ def is_desirable(url):
             return False
         
         # swiki pages seem to be the same as wiki pages
-        if "swiki" in url:
-            return False
+        subdomains = {"swiki", "dale-cooper-v0", ".lom."}
+        for subdomain in subdomains:
+            if subdomain in url.lower():
+                return False
         
         # Check query for crawler traps
         trap_params = {"tribe", "orderby", "ical", "format=xml", "p=", "filter", "date=", "share=",
                         "page_id", "rest_route", "id=", "tab_files", "tab_details", "do=", "idx=",
-                        "image=", "rev=", "rev2", "search=", "keywords="}
+                        "image=", "rev=", "rev2", "search=", "keywords=", "eventdisplay", "version=",
+                        "precision=second"}
         query = parsed.query.lower()
         for param in trap_params:
             if param in query:
                 return False
         
         # Check path for crawler traps
-        path_segments = {"/wp-", "/feed", "xml", "/page", "/login"}
+        path_segments = {"/wp-", "/feed", "xml", "/page", "/login", "/today", "/month", "/events/", "/index",
+                         "/tsld", "/sld", "/list"}
         path = parsed.path.lower()
         for segment in path_segments:
             if segment in path:
