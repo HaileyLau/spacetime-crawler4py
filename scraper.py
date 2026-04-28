@@ -13,7 +13,7 @@ def scraper(url, resp):
         # return [link for link in links if is_desirable(link)]
 
 
-# Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
+# Return a list with the hyperlinks (as strings) scraped from resp.raw_response.content
 def extract_next_links(url, resp):
     try:
         # List to hold the scraped URLs (using a set for faster lookup)
@@ -74,6 +74,7 @@ def is_desirable(url):
     # If you decide to crawl it, return True; otherwise return False.
     # There are already some conditions that return False.
     try:
+
         parsed = urlparse(url)
         domains = {"ics.uci.edu", "cs.uci.edu", "informatics.uci.edu", "stat.uci.edu"}
         in_domain = False
@@ -108,8 +109,7 @@ def is_desirable(url):
                 return False
         
         # Check path for crawler traps
-        path_segments = {"/wp-", "/feed", "xml", "/page", "/login", "/today", "/month", "/events/", "/index",
-                         "/tsld", "/sld", "/list"}
+        path_segments = {"/wp-", "/feed", "xml", "/page", "/login"}
         path = parsed.path.lower()
         for segment in path_segments:
             if segment in path:
@@ -129,10 +129,8 @@ def is_desirable(url):
 
     except ValueError as e:
         print ("ValueError for ", url)
-        print ("Error: ", e)
         return False
 
-    except TypeError as e:
-        print ("TypeError for ", url)
-        print ("Error: ", e)
+    except TypeError:
+        print ("TypeError for ", parsed)
         raise
