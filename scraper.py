@@ -27,7 +27,7 @@ def extract_next_links(url, resp):
             print(resp.error)
             print()
 
-            return urls
+            return list(urls)
 
         # BeautifulSoup converts the HTML response into an object that can be parsed by HTML tag
         text = BeautifulSoup(resp.raw_response.content, "html.parser")
@@ -58,11 +58,11 @@ def extract_next_links(url, resp):
     
     except ValueError:
         print ("ValueError for ", url)
-        return None
+        return list(urls)
     
     except AssertionError:
         print ("AssertionError for ", url)
-        return None
+        return list(urls)
 
     except TypeError:
         print ("TypeError for ", url)
@@ -119,7 +119,7 @@ def is_desirable(url):
         
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
-            + r"|png|tiff?|mid|mp2|mp3|mp4"
+            + r"|png|tiff?|mid|mp2|mp3|mp4|mpg"
             + r"|wav|avi|mov|mpeg|ram|m4v|mkv|ogg|ogv|pdf"
             + r"|ps|eps|tex|ppt|pptx|doc|docx|xls|xlsx|names"
             + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
