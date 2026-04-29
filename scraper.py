@@ -3,6 +3,28 @@ from urllib.parse import urlparse, urljoin, urlunparse
 
 from bs4 import BeautifulSoup 
 
+# Global state for exact duplication
+seen_exact = set()
+
+
+# Weighted checksum for exact duplicate detection
+def checkSum(text):
+    total = 0
+    for i, ch in enumerate(text):
+        total += (i+1) * ord(ch)
+    return total % (2 ** 64)
+
+#Return true if the page is a exact duplication
+def is_exact_duplication(text):
+    # Filter low information webpages
+    if not text or len(text.strip()) < 100:
+        return True
+    
+    # Exact duplicate check by using checksum
+    cs = checkSum(text)
+    if cs in seen_exact:
+        return True
+    seen_exact.add(cs)
 
 def scraper(url, resp):
 
