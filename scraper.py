@@ -101,7 +101,7 @@ def is_desirable(url):
         trap_params = {"tribe", "orderby", "ical", "format=", "p=", "filter", "date=", "share=",
                         "page_id", "rest_route", "id=", "tab_files", "tab_details", "do=", "idx=",
                         "image=", "rev=", "rev2", "search=", "keywords=", "eventdisplay", "version=",
-                        "precision=second", "c=", "action="}
+                        "precision=second", "C=", "action="}
         query = parsed.query.lower()
         for param in trap_params:
             if param in query:
@@ -124,7 +124,7 @@ def is_desirable(url):
             + r"|ps|eps|tex|ppt|pptx|doc|docx|xls|xlsx|names"
             + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
             + r"|epub|dll|cnf|tgz|sha1"
-            + r"|thmx|mso|arff|rtf|jar|csv"
+            + r"|thmx|mso|arff|rtf|jar|csv|sdf|can|mol"
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower())
 
     except ValueError as e:
