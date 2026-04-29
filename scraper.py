@@ -5,17 +5,70 @@ from bs4 import BeautifulSoup
 
 # Global state for exact duplication
 seen_exact = set()
-
-
+seen_simhash = []
+SIMHASH_BITS = 64
+HAMMING_THREADHOLD = 3
 # Weighted checksum for exact duplicate detection
 def checkSum(text):
     total = 0
     for i, ch in enumerate(text):
         total += (i+1) * ord(ch)
     return total % (2 ** 64)
+# hash function to map each token to a 64 bit integer
+def _djb2(token):
+    h = 5381
+    for ch in token:
+        h = ((h << 5) + h) + ord(ch)
+        h &= 0xFFFFFFFFFFFFFFFF # keep it 64 bit
+    return h
 
+# Split text into tokens from last assignment (but length > 2)
+def tokenize(text):
+    tokens = []
+    curr = []
+    for ch in text:
+        if ch.isalnum():
+            curr.append(ch.lower())
+        else:
+            if len(curr) > 2:
+                tokens.append("".join(curr))
+            curr = []
+    if len(curr) > 2:
+        tokens.append("".join(curr))
+    return tokens
+
+# Compute a 64 bit simhash fingerprint for the given text
+def simHash(text):
+    tokens = tokenize(text)
+    if not tokens:
+        return 0
+    
+    # For each bit position, count how many token hashes have that bit set vs unset
+    v = [0] * SIMHASH_BITS
+    for token in tokens:
+        h = _djb2(token)
+        for i in range(SIMHASH_BITS):
+            if h & (1 << (SIMHASH_BITS - 1 - i)):
+                v[i] += 1
+            else:
+                v[i] -= 1
+    # If the count for a bit position, set that bit to 1
+    fingerprint = 0
+    for i in range(SIMHASH_BITS):
+        if v[i] > 0:
+            fingerprint |= (1 << (SIMHASH_BITS - 1 - i))
+
+    return fingerprint
+# count the number of differing bits betweeen two hashes
+def hamming_distance(h1, h2):
+    xor = h1 ^ h2
+    count = 0
+    while xor:
+        xor &= xor - 1 # xor & xor -1 can remove the first 1 from right to left
+        count += 1
+    return count # count out how many differing numbers between two hashes
 #Return true if the page is a exact duplication
-def is_exact_duplication(text):
+def is_duplicate(text):
     # Filter low information webpages
     if not text or len(text.strip()) < 100:
         return True
@@ -26,8 +79,23 @@ def is_exact_duplication(text):
         return True
     seen_exact.add(cs)
 
-def scraper(url, resp):
+    # Near duplicate check
+    sh = simHash(text)
+    for (existing_sh,) in seen_simhash:
+        if hamming_distance(sh, existing_sh) <= HAMMING_THREADHOLD:
+            return True
+    seen_simhash.append((sh,))
 
+    return False
+
+def scraper(url, resp):
+     # Extract plain text from the HTML response
+    text = BeautifulSoup(resp.raw_response.content, "html.parser")
+    plain_text = text.get_text(separator=" ", strip=True)
+
+    # Skip duplicate or near-duplicate pages
+    if is_duplicate(plain_text):
+        return []
     return extract_next_links(url, resp)
 
     # extract_next_link() already checks that a link is_desirable() before returning
