@@ -89,7 +89,13 @@ def is_duplicate(text):
     return False
 
 def scraper(url, resp):
-     # Extract plain text from the HTML response
+    # Check that the response and its content are valid
+    if not resp or resp.status != 200:
+        return []
+    if not resp.raw_response or not resp.raw_response.content:
+        return []
+    
+    # Extract plain text from the HTML response
     text = BeautifulSoup(resp.raw_response.content, "html.parser")
     plain_text = text.get_text(separator=" ", strip=True)
 
