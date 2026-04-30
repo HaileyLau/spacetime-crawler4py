@@ -122,8 +122,9 @@ def extract_next_links(url, resp):
             print("\nAN ERROR HAS OCCURRED")
             print(resp.error)
             print()
-
+        if not resp.raw_response or not resp.raw_response.content:
             return list(urls)
+            
 
         # BeautifulSoup converts the HTML response into an object that can be parsed by HTML tag
         text = BeautifulSoup(resp.raw_response.content, "html.parser")
