@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 seen_exact = set()
 seen_simhash = []
 SIMHASH_BITS = 64
-HAMMING_THREADHOLD = 3
+HAMMING_THREADHOLD = 0.9
 # Weighted checksum for exact duplicate detection
 def checkSum(text):
     total = 0
@@ -45,13 +45,20 @@ def simHash(text):
     
     # For each bit position, count how many token hashes have that bit set vs unset
     v = [0] * SIMHASH_BITS
+
+    # Count word frequencies first
+    freq = {}
     for token in tokens:
+        freq[token] = freq.get(token, 0) + 1
+
+    # Use frequency as weight
+    for token, weight in freq.items():
         h = _djb2(token)
         for i in range(SIMHASH_BITS):
             if h & (1 << (SIMHASH_BITS - 1 - i)):
-                v[i] += 1
+                v[i] += weight   # add frequency as weight
             else:
-                v[i] -= 1
+                v[i] -= weight   # subtract frequency as weight
     # If the count for a bit position, set that bit to 1
     fingerprint = 0
     for i in range(SIMHASH_BITS):
