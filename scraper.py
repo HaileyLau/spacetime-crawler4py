@@ -198,7 +198,7 @@ def is_desirable(url):
         trap_params = {"tribe", "orderby", "ical", "format=", "p=", "filter", "date=", "share=",
                         "page_id", "rest_route", "id=", "tab_files", "tab_details", "do=", "idx=",
                         "image=", "rev=", "rev2", "search=", "keywords=", "eventdisplay", "version=",
-                        "precision=second", "C=", "action="}
+                        "precision=second", "C=", "action=", "people="}
         query = parsed.query.lower()
         for param in trap_params:
             if param in query:
