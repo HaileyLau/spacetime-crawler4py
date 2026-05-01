@@ -12,6 +12,17 @@ class Frontier(object):
         self.logger = get_logger("FRONTIER")
         self.config = config
         self.to_be_downloaded = list()
+
+        # Counters to track statistics for the report
+        self.num_unique_urls = 0
+
+        self.longest_page = ""
+        self.longest_page_length = 0
+
+        self.word_counts = dict()
+        self.stopwords = self.get_stopwords("crawler/stopwords.txt")
+
+        self.subdomains = dict()
         
         if not os.path.exists(self.config.save_file) and not restart:
             # Save file does not exist, but request to load save.
@@ -70,3 +81,14 @@ class Frontier(object):
 
         self.save[urlhash] = (url, True)
         self.save.sync()
+
+    def get_stopwords(self, path: str) -> set[str]:
+        stopwords = set()
+
+        with open(path, "r") as file:
+            for line in file:
+                stopwords.add(line)
+
+        return stopwords
+
+

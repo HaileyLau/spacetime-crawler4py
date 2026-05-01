@@ -3,6 +3,8 @@ from urllib.parse import urlparse, urljoin, urlunparse
 
 from bs4 import BeautifulSoup 
 
+import helpers
+
 # Global state for exact duplication
 seen_exact = set()
 seen_simhash = []
@@ -95,7 +97,12 @@ def is_duplicate(text):
 
     return False
 
-def scraper(url, resp):
+def scraper(url, resp, frontier):
+
+    # Every URL that passes through the scraper was discovered by the crawler
+    # URLs with fragments have already been ignored, thus aren't counted
+    frontier.num_unique_urls += 1
+
     # Check that the response and its content are valid
     if not resp or resp.status != 200:
         return []
@@ -109,15 +116,11 @@ def scraper(url, resp):
     # Skip duplicate or near-duplicate pages
     if is_duplicate(plain_text):
         return []
-    return extract_next_links(url, resp)
-
-    # extract_next_link() already checks that a link is_desirable() before returning
-        # links = extract_next_links(url, resp)
-        # return [link for link in links if is_desirable(link)]
-
+    
+    return extract_next_links(url, resp, frontier)
 
 # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
-def extract_next_links(url, resp):
+def extract_next_links(url, resp, frontier):
     try:
         # List to hold the scraped URLs (using a set for faster lookup)
         urls: set[str] = set()
@@ -129,6 +132,8 @@ def extract_next_links(url, resp):
             print("\nAN ERROR HAS OCCURRED")
             print(resp.error)
             print()
+
+        # Return if there's no response
         if not resp.raw_response or not resp.raw_response.content:
             return list(urls)
             
@@ -157,6 +162,36 @@ def extract_next_links(url, resp):
             # Add the link to the scraped URLS if it's desirable AND not a duplicate 
             if (is_desirable(link)) and (link not in urls):
                 urls.add(link)
+
+        # ------------ Below are operations to update statistics for report ------------
+        
+        # Tokenize the text of the page
+        text_string = text.get_text()
+        words = helpers.tokenize(text_string, frontier.stopwords)
+
+        # Compare it to the current longest page
+        if len(words) > frontier.longest_page_length:
+            frontier.longest_page_length = len(words)
+            frontier.longest_page = url
+
+        # Add the frequencies of each word in the page to the total frequencies dictionary
+        helpers.computeWordFrequencies(words, frontier.word_counts)
+
+        # Extract the subdomain
+        parsed_url = urlparse(url)
+        domain = parsed_url.netloc
+        subdomain = domain[0:domain.find(".uci.edu")] # Chops off the domain
+
+        # Add the subdomain to the subdomain total frequencies dictionary
+        if subdomain in frontier.subdomains:
+
+            # URLs with queries are considered the same page, so skip
+            if url.find("?") != -1:  
+                frontier.subdomains[subdomain] += 1
+
+        else:
+            frontier.subdomains[subdomain] = 1
+
 
         return list(urls)
     
