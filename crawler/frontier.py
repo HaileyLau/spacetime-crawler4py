@@ -87,7 +87,7 @@ class Frontier(object):
 
         with open(path, "r") as file:
             for line in file:
-                stopwords.add(line)
+                stopwords.add(line.strip())
 
         return stopwords
 

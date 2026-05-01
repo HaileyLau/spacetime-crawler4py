@@ -13,8 +13,8 @@ def tokenize(text: str, stopwords: set[str]) -> list[str]:
     # Split each whitespace separated word (in case it contains special chars)
     for word in words:
 
-        # Skip whitespace separated stopwords
-        if word not in stopwords:
+        # Skip whitespace separated stopwords and single char words
+        if word.strip() not in stopwords and len(word.strip()) > 1:
             
             splitWords: list[str] = tokenizeWord(word)
 
