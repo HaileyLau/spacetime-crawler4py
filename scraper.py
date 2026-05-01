@@ -186,7 +186,7 @@ def extract_next_links(url, resp, frontier):
         if subdomain in frontier.subdomains:
 
             # URLs with queries are considered the same page, so skip
-            if url.find("?") != -1:  
+            if url.find("?") == -1:  
                 frontier.subdomains[subdomain] += 1
 
         else:
