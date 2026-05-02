@@ -9,7 +9,7 @@ import time
 
 class Worker(Thread):
     def __init__(self, worker_id, config, frontier):
-        self.logger = get_logger(f"Worker-{worker_id}", "Worker-19")
+        self.logger = get_logger(f"Worker-{worker_id}", "Worker-20")
         self.config = config
         self.frontier = frontier
         # basic check for requests in scraper
@@ -41,7 +41,7 @@ class Worker(Thread):
     # Updates the log after every URL that is scraped
     def update_log(self) -> None:
 
-        with open("report.txt", "w") as file:
+        with open("report2.txt", "w") as file:
                 file.write("Assignment 2: Web Crawler Report\nZhengxing Chen | Hailey Lau | Wanrong Wu\n\n")
 
                 file.write("Number of unique pages found: " + str(self.frontier.num_unique_urls) + "\n\n")

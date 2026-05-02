@@ -99,7 +99,7 @@ def is_duplicate(text):
 
 def scraper(url, resp, frontier):
 
-    # Every URL that passes through the scraper was discovered by the crawler
+    # Every URL that passes through the scraper was discovered by the crawler.
     # URLs with fragments have already been ignored, thus aren't counted
     frontier.num_unique_urls += 1
 
@@ -167,7 +167,7 @@ def extract_next_links(url, resp, frontier):
         
         # Tokenize the text of the page
         text_string = text.get_text()
-        words = helpers.tokenize(text_string, frontier.stopwords)
+        words = helpers.tokenize(text_string)
 
         # Compare it to the current longest page
         if len(words) > frontier.longest_page_length:
@@ -175,7 +175,8 @@ def extract_next_links(url, resp, frontier):
             frontier.longest_page = url
 
         # Add the frequencies of each word in the page to the total frequencies dictionary
-        helpers.computeWordFrequencies(words, frontier.word_counts)
+        words_without_stopwords = helpers.tokenize_without_stopwords(text_string, frontier.stopwords)
+        helpers.computeWordFrequencies(words_without_stopwords, frontier.word_counts)
 
         # Extract the subdomain
         parsed_url = urlparse(url)

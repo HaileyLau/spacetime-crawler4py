@@ -1,9 +1,8 @@
 
 import sys
 
-# Reads a text file and returns a list of the tokens in the file, ignoring stopwords
-# A token is a sequence of alphanumerical characters as specified by isalnum
-def tokenize(text: str, stopwords: set[str]) -> list[str]:
+# Reads a text file and returns a list of the tokens in the file
+def tokenize(text: str) -> list[str]:
 
     tokens: list[str] = []
 
@@ -13,14 +12,28 @@ def tokenize(text: str, stopwords: set[str]) -> list[str]:
     # Split each whitespace separated word (in case it contains special chars)
     for word in words:
 
-        # Skip whitespace separated stopwords and single char words
-        if word.strip() not in stopwords and len(word.strip()) > 1:
-            
-            splitWords: list[str] = tokenizeWord(word)
+        word = word.strip()
 
-            # Don't add empty token lists or stopwords that are separated by non-alphanumeric chars
-            if(len(splitWords) > 0 and not set(splitWords).issubset(stopwords)): 
-                tokens += splitWords
+        if not word.isnumeric() and len(word) > 2:
+            tokens += word
+
+    # Return the list of tokens, even if the file was not read
+    return tokens
+
+def tokenize_without_stopwords(text: str, stopwords: set[str]) -> list[str]:
+
+    tokens: list[str] = []
+
+    # Split the text by whitespace
+    words: list[str] = text.split()
+
+    # Split each whitespace separated word (in case it contains special chars)
+    for word in words:
+
+        word = word.strip()
+
+        if word not in stopwords and len(word) > 2 and not word.isnumeric():
+            tokens += word
 
     # Return the list of tokens, even if the file was not read
     return tokens
