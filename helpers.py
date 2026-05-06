@@ -1,6 +1,6 @@
 
 # Splits a string into tokens by whitespace, keeping all words
-def tokenize(text: str) -> list[str]:
+def tokenize_without_numbers(text: str) -> list[str]:
 
     tokens: list[str] = []
 
@@ -38,7 +38,6 @@ def tokenize_without_stopwords(text: str, stopwords: set[str]) -> list[str]:
 
     # Return the list of tokens, even if the file was not read
     return tokens
-            
 
 # Counts the number of occurences of each token in a list of tokens
 def computeWordFrequencies(tokens: list[str], frequencies: dict[str, int]) -> None:
@@ -48,5 +47,3 @@ def computeWordFrequencies(tokens: list[str], frequencies: dict[str, int]) -> No
             frequencies[token] += 1
         else:
             frequencies[token] = 1
-
-

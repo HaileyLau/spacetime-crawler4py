@@ -16,6 +16,7 @@ def checkSum(text):
     for i, ch in enumerate(text):
         total += (i+1) * ord(ch)
     return total % (2 ** 64)
+
 # hash function to map each token to a 64 bit integer
 def _djb2(token):
     h = 5381
@@ -68,6 +69,7 @@ def simHash(text):
             fingerprint |= (1 << (SIMHASH_BITS - 1 - i))
 
     return fingerprint
+
 # count the number of differing bits betweeen two hashes
 def hamming_distance(h1, h2):
     xor = h1 ^ h2
@@ -76,7 +78,8 @@ def hamming_distance(h1, h2):
         xor &= xor - 1 # xor & xor -1 can remove the first 1 from right to left
         count += 1
     return count # count out how many differing numbers between two hashes
-#Return true if the page is a exact duplication
+
+# Return true if the page is a exact duplication
 def is_duplicate(text):
     # Filter low information webpages
     if not text or len(text.strip()) < 100:
@@ -136,12 +139,10 @@ def extract_next_links(url, resp, frontier):
         # Return if there's no response
         if not resp.raw_response or not resp.raw_response.content:
             return list(urls)
-            
-
+        
         # BeautifulSoup converts the HTML response into an object that can be parsed by HTML tag
         text = BeautifulSoup(resp.raw_response.content, "html.parser")
-    
-        
+
         # Finds all tags that have an href attribute
         for tag in text.find_all(href=True):
 
@@ -167,7 +168,7 @@ def extract_next_links(url, resp, frontier):
         
         # Tokenize the text of the page (keeping stopwords)
         text_string = text.get_text(separator=" ").lower()  # Convert to all lowercase first
-        words = helpers.tokenize(text_string)
+        words = helpers.tokenize_without_numbers(text_string)
 
         # Compare it to the current longest page
         if len(words) > frontier.longest_page_length:
@@ -187,12 +188,11 @@ def extract_next_links(url, resp, frontier):
         if subdomain in frontier.subdomains:
 
             # URLs with queries are considered the same page, so skip
-            if url.find("?") != -1:  
+            if url.find("?") == -1:  
                 frontier.subdomains[subdomain] += 1
 
         else:
             frontier.subdomains[subdomain] = 1
-
 
         return list(urls)
     
@@ -207,7 +207,6 @@ def extract_next_links(url, resp, frontier):
     except TypeError:
         print ("TypeError for ", url)
         raise
-
 
 def is_desirable(url):
     # Decide whether to crawl this url or not. 
