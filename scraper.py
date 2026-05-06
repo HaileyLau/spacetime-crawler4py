@@ -119,7 +119,7 @@ def scraper(url, resp, frontier):
     
     return extract_next_links(url, resp, frontier)
 
-# Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
+# Return a list with the hyperlinks (as strings) scraped from resp.raw_response.content
 def extract_next_links(url, resp, frontier):
     try:
         # List to hold the scraped URLs (using a set for faster lookup)
@@ -165,8 +165,8 @@ def extract_next_links(url, resp, frontier):
 
         # ------------ Below are operations to update statistics for report ------------
         
-        # Tokenize the text of the page
-        text_string = text.get_text()
+        # Tokenize the text of the page (keeping stopwords)
+        text_string = text.get_text(separator=" ").lower()  # Convert to all lowercase first
         words = helpers.tokenize(text_string)
 
         # Compare it to the current longest page

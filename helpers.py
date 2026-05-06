@@ -1,7 +1,5 @@
 
-import sys
-
-# Reads a text file and returns a list of the tokens in the file
+# Splits a string into tokens by whitespace, keeping all words
 def tokenize(text: str) -> list[str]:
 
     tokens: list[str] = []
@@ -9,17 +7,19 @@ def tokenize(text: str) -> list[str]:
     # Split the text by whitespace
     words: list[str] = text.split()
 
-    # Split each whitespace separated word (in case it contains special chars)
+    # Filter out the undesired tokens
     for word in words:
 
         word = word.strip()
 
-        if not word.isnumeric() and len(word) > 2:
+        # Ignore short words and numbers
+        if (len(word) > 2) and (not word.isnumeric()):
             tokens += word
 
-    # Return the list of tokens, even if the file was not read
+    # Return the tokens
     return tokens
 
+# Splits a string into tokens by whitespace, ignoring the given stopwords
 def tokenize_without_stopwords(text: str, stopwords: set[str]) -> list[str]:
 
     tokens: list[str] = []
@@ -27,41 +27,17 @@ def tokenize_without_stopwords(text: str, stopwords: set[str]) -> list[str]:
     # Split the text by whitespace
     words: list[str] = text.split()
 
-    # Split each whitespace separated word (in case it contains special chars)
+    # Filter out the undesired tokens and stopwords
     for word in words:
 
         word = word.strip()
 
-        if word not in stopwords and len(word) > 2 and not word.isnumeric():
+        # Ignore short words, numbers, and stopwords
+        if (len(word) > 2) and (not word.isnumeric()) and (word not in stopwords):
             tokens += word
 
     # Return the list of tokens, even if the file was not read
     return tokens
-
-
-# Helper function to split a word that may contain non-alphanumeric characters
-def tokenizeWord(rawWord: str) -> list[str]:
-
-    words: list[str] = []
-    word: str = ""
-
-    for letter in rawWord:
-
-        # Add the character to the word if it's alphanumeric and an English char
-        if letter.isalnum() and letter.isascii():
-            word += letter
-
-        # Else, end the word, convert to lowercase, and add it to words
-        else:
-            if len(word) > 0: # Don't add empty words
-                words.append(word.lower())
-                word = ""
-
-    # Add the last word, if any
-    if len(word) > 0:
-        words.append(word.lower())
-
-    return words
             
 
 # Counts the number of occurences of each token in a list of tokens

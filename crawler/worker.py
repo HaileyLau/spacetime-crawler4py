@@ -72,7 +72,7 @@ class Worker(Thread):
 
         file.write("\n")
 
-    # Helper function to print out all subdomainds in alphabetic order
+    # Helper function to print out all subdomains in alphabetic order
     def write_subdomains(self, subdomains: dict[str, int], file) -> None:
 
         # Order the subdomains alphabetically first
@@ -84,5 +84,3 @@ class Worker(Thread):
 
         file.write("\n")
 
-
-            
