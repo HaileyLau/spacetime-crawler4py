@@ -14,7 +14,7 @@ def tokenize_without_numbers(text: str) -> list[str]:
 
         # Ignore short words and numbers
         if (len(word) > 2) and (not word.isnumeric()):
-            tokens += word
+            tokens.append(word)
 
     # Return the tokens
     return tokens
@@ -32,9 +32,9 @@ def tokenize_without_stopwords(text: str, stopwords: set[str]) -> list[str]:
 
         word = word.strip()
 
-        # Ignore short words, numbers, and stopwords
-        if (len(word) > 2) and (not word.isnumeric()) and (word not in stopwords):
-            tokens += word
+        # Ignore short words, numbers, non-ascii chars, and stopwords
+        if (len(word) > 2) and (not word.isnumeric()) and (word.isascii()) and (word not in stopwords):
+            tokens.append(word)
 
     # Return the list of tokens, even if the file was not read
     return tokens
