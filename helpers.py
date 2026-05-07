@@ -32,8 +32,8 @@ def tokenize_without_stopwords(text: str, stopwords: set[str]) -> list[str]:
 
         word = word.strip()
 
-        # Ignore short words, numbers, non-ascii chars, and stopwords
-        if (len(word) > 2) and (not word.isnumeric()) and (word.isascii()) and (word not in stopwords):
+        # Ignore short words, numbers, non-printable chars, and stopwords
+        if (len(word) > 2) and (not word.isnumeric()) and (word.isascii() and word.isprintable()) and (word not in stopwords):
             tokens.append(word)
 
     # Return the list of tokens, even if the file was not read
