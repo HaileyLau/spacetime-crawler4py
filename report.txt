@@ -1,0 +1,135 @@
+Assignment 2: Web Crawler Report
+Zhengxing Chen | Hailey Lau | Wanrong Wu
+
+Number of unique pages found: 4899
+
+The longest page found was: http://www.ics.uci.edu/~shantas/tutorials/20-icde-crypto_encryption_secret-sharing_sgx_tutorial.ppsx with 1034380 words.
+
+The 50 most common words were:
+    data - 4717
+    computer - 4422
+    will - 3660
+    insert - 3273
+    science - 3071
+    search - 2947
+    university - 2935
+    learning - 2913
+    students - 2883
+    uci - 2785
+    ics - 2780
+    software - 2747
+    news - 2660
+    systems - 2641
+    irvine - 2580
+    events - 2548
+    ramesh - 2468
+    contact - 2333
+    project - 2147
+    people - 2112
+    projects - 2057
+    current - 1968
+    computing - 1913
+    student - 1882
+    school - 1836
+    jain - 1799
+    machine - 1732
+    atom - 1707
+    paper - 1704
+    health - 1687
+    1sg - 1680
+    faculty - 1661
+    conference - 1572
+    vision - 1565
+    program - 1494
+    models - 1473
+    publications - 1459
+    pdf - 1451
+    courses - 1440
+    ieee - 1423
+    graduate - 1402
+    endobj - 1352
+    obj - 1352
+    system - 1293
+    dechter - 1283
+    computational - 1281
+    future - 1244
+    members - 1231
+    rina - 1226
+    international - 1217
+
+The subdomains found were:
+    accessibility.ics, 5
+    acoi.ics, 75
+    archive-beta.ics, 6
+    archive.ics, 25
+    asterix.ics, 6
+    cdb.ics, 12
+    cert.ics, 11
+    chemdb.ics, 14
+    chenli.ics, 9
+    cloudberry.ics, 4
+    cml.ics, 58
+    code.ics, 14
+    computableplant.ics, 38
+    create.ics, 4
+    cs.ics, 8
+    deeprxn.ics, 31
+    dgillen.ics, 25
+    ds4all.ics, 9
+    duttgroup.ics, 59
+    dynamo.ics, 4
+    edgelab.ics, 7
+    emj.ics, 29
+    evoke.ics, 4
+    flamingo.ics, 9
+    fr.ics, 3
+    futurehealth.ics, 146
+    grape.ics, 203
+    graphics.ics, 1
+    hobbes.ics, 9
+    hpi.ics, 5
+    i-sensorium.ics, 4
+    iasl.ics, 1
+    icde2023.ics, 40
+    ics, 111
+    industryshowcase.ics, 18
+    informatics, 1
+    informatics.ics, 14
+    ipubmed.ics, 1
+    isg.ics, 163
+    jgarcia.ics, 1
+    luci.ics, 4
+    mcs.ics, 4
+    mds.ics, 8
+    mhcid.ics, 17
+    mlphysics.ics, 18
+    mswe.ics, 5
+    mupro.proteomics.ics, 2
+    nalini.ics, 7
+    ngs.ics, 422
+    oai.ics, 6
+    pepito.proteomics.ics, 2
+    psearch.ics, 1
+    radicle.ics, 5
+    riscit.ics, 1
+    scale.ics, 6
+    scratch.proteomics.ics, 3
+    seal.ics, 4
+    selectpro.proteomics.ics, 6
+    sherlock.ics, 7
+    stairs.ics, 3
+    stat, 1
+    stat.ics, 8
+    summeracademy.ics, 11
+    tastier.ics, 1
+    tutoring.ics, 5
+    unite.ics, 10
+    vision.ics, 202
+    wics.ics, 154
+    www.cs, 2
+    www.ics, 705
+    www.informatics, 8
+    www.informatics.ics, 1
+    www.stat, 2
+    xtune.ics, 6
+
